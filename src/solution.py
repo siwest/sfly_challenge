@@ -1,11 +1,69 @@
 import os
 import json
 from pprint import pprint
+import random
+import hashlib
+from datetime import datetime
+import random
 
 SAMPLE_IN_FILE = os.path.join(os.getcwd(), 'sample_input/events.txt')
 IN_FILE = os.path.join(os.getcwd(), 'input/input.txt')
 OUT_FILE = os.path.join(os.getcwd(), 'output/output.txt')
 D = {}
+
+
+def GenEvent():
+    event = {}
+    event_type = random.choice(['CUSTOMER', 'ORDER', 'IMAGE', 'SITE_VISIT'])
+    user_name = 'user' + str(random.choice(range(1, 10)))
+    uhash = hashlib.sha1(user_name.encode('utf-8')).hexdigest()
+
+    year = 2017
+    month = 6
+    day = random.randint(1, 7)  # Will only look at one week
+    hour = random.randint(0, 23)
+    minute = random.randint(0, 59)
+    sec = random.randint(0, 59)
+    date = str(datetime(year, month, day, hour, minute, sec).isoformat()) + 'Z'
+    event['event_time'] = date
+
+    if event_type is 'CUSTOMER':
+        event['key'] = uhash
+        event['type'] = 'CUSTOMER'
+        event['verb'] = random.choice(['NEW', 'UPDATE'])
+        event['last_name'] = random.choice(['Peter', 'West', 'Lucy', None])
+        event['adr_city'] = random.choice(['Middletown', 'Portland',
+                                           'Lockhaven', None])
+        event['adr_state'] = random.choice(['CA', 'MD', 'NJ', None])
+    elif event_type is 'SITE_VISIT':
+        event['key'] = uhash
+        event['type'] = 'SITE_VISIT'
+        event['verb'] = 'NEW'
+        event['customer_id'] = uhash
+    elif event_type is 'IMAGE':
+        event['key'] = uhash
+        event['type'] = 'IMAGE'
+        event['verb'] = 'UPLOAD'
+        event['customer_id'] = uhash
+        event['camera_make'] = random.choice(['Nokia', 'Kodak'])
+    elif event_type is 'ORDER':
+        event['key'] = uhash
+        event['type'] = 'ORDER'
+        event['verb'] = random.choice(['NEW', 'UPDATE'])
+        event['customer_id'] = uhash
+        event['total_amount'] = str(random.randint(1, 10000)) + " USD"
+    return event
+
+
+def GenEvents(N):
+    batch = []
+    for i in range(N):
+        generated_event = GenEvent()
+        batch.append(generated_event)
+    batch = json.dumps(batch)
+    loaded_batch = json.loads(batch)
+    with open(IN_FILE, 'w') as f:
+        json.dump(loaded_batch, f)
 
 
 def Ingest(e, D):
@@ -53,26 +111,34 @@ def TopXSimpleLTVCustomers(x, D):
         if 'SITE_VISIT' in record:
             sum_visits += len(record['SITE_VISIT'])
 
-        a = sum_expenditures / sum_visits
+        try:
+            a = sum_expenditures / sum_visits
+        except ZeroDivisionError:  # In an ideal world, not supposed to happen
+            a = 1
         ltv = format(52 * a * 10, '0.2f')
-        ltv_cust_list.append([cust_id, ltv])
+        ltv_cust_list.append([str(cust_id), ltv])
 
-    sorted_ltv_cust_list = (sorted(ltv_cust_list,
-                                   key=lambda x: x[1],
-                                   reverse=True))[:x]
-    return sorted_ltv_cust_list
+    sorted_ltv_cust_list = sorted(ltv_cust_list,
+                                  key=lambda k: float(k[1]),
+                                  reverse=True)[:x]
+    output = []
+    for elem in sorted_ltv_cust_list:
+        output.append({elem[0]: elem[1]})
+
+    output = json.dumps(output, indent=4)
+    with open(OUT_FILE, 'w') as f:
+        f.write(output)
 
 
 def main():
-    with open(SAMPLE_IN_FILE) as f:
+    GenEvents(100)
+    with open(IN_FILE) as f:
         batch = json.load(f)
-
     for e in batch:
         Ingest(e, D)
-    pprint(D)
 
-    for customer in TopXSimpleLTVCustomers(10, D):
-        print(customer)
+    TopXSimpleLTVCustomers(10, D)
+
 
 if __name__ == "__main__":
     main()
