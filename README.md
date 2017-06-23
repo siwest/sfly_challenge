@@ -28,7 +28,7 @@ The goal of this project is to:
 
 The last created events are saved in the input/input.txt file. 100 new events can be created by running:
 
-    ``` python src/EventGen.py 100 ```
+    python src/EventGen.py 100
 
 Feel free to use any number in the command line argument to tailor the desired number of random events.
 
@@ -36,7 +36,7 @@ Feel free to use any number in the command line argument to tailor the desired n
 
 Once the desired json event data is in the input/input.txt file, the following command can be run:
 
-    ``` python src/Solution.py ```
+    python src/Solution.py
 
 This script calls the ingest(e, d) function to ingest the event (e) input data into data structure (d). It then automatically calls top_x_simple_ltv_customers(x, d) in the main() method, with x=5 by default. Feel free to change this x value in the top_x_simple_ltv_customers(x, d) function call (at Solution.py, line 79) to any positive integer.
 
