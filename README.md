@@ -14,7 +14,7 @@ The goal of this project is to:
 ### Assumptions about the Problem:
 
 - We don't know how much input data we need to generate. The function GenEvents called in main() has the keyword argument 'number_events' which can be set to generate a number of random events.
-- New Customer Update Rule: For simplicity, New or Update verbs are treated as the same create or update instruction. There's no check to ensure a record exists before it is updated. Some exception handling is needed.
+- For simplicity, there's no special handling of New or Update verbs. Whenever a CUSTOMER event occurs, it is added to the CUSTOMER event list for that customer. More data processing and some exception handling is needed to ensure updates to customer profiles occur in order. However, this special handling was not required to solve the stated problem.
 - We don't know how records will ultimately be sorted by future calling analytics functions, so we leave the event records categorized by customer_id and event type, but leave the records within these categories unsorted.
 - We don't know under what conditions we should join and ORDER event with a SITE_VISIT event. The timestamps of these can differ.
   - What is the acceptable range to for a site visit to result in an order? (SITE_VISIT event_time - ORDER event_time)
