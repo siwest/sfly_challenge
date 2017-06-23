@@ -20,7 +20,7 @@ The goal of this project is to:
   - What is the acceptable range of time to say a site visit results in an order? (SITE_VISIT event_time - ORDER event_time)
   - What if there is no site visit event recorded, but an order occurred? Does this ever happen? Exception handling for divide by zero error is needed.
   - What if multiple site visit events are in the batch (perhaps someone did several "refreshes" of the session)? How should repeat events be handled?
-- The event data has been left 'intact' within data structure d; that is, no duplicate keys (ex: customer_id, event_type) were deleted from the dictionary event object added to d during the ingest(e, d) task. This may make it easier to recreate the original data objects in the future, if needed.
+- The event data has been left 'intact' within data structure d; that is, no duplicate keys (ex: customer_id, event_type) were deleted from the dictionary event object added to d during the ingest(e, d) task. This may make it easier to recreate the original input data in the future, if needed.
 
 
 ### How to run Solution:
