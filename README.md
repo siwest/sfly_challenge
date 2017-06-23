@@ -4,6 +4,7 @@ The original problem statement can be found here: https://github.com/sflydwh/cod
 ### Problem Statement, reduced:
 
 The goal of this project is to:
+
 #. Create event data IAW data schema given in problem statement. 
 #. Define Ingest(e,D) function to ingest event data. 
 #. Define TopXSimpleLTVCustomers(x, D) function to calculate the Lifetime Value (“LTV”) of a customer based on data in D.
