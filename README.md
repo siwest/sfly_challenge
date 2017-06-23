@@ -45,6 +45,9 @@ This script calls the ingest(e, d) function to ingest the event (e) input data i
 
 The output of the Solution's top_x_simple_ltv_customers function is saved in output/output.txt in json format. The output contains a list of dictionary key-value pairs of the form {customer_id: ltv}.
 
+### Testing and Further Analysis
+
+A ipython notebook file named "Verification and Visualization with Pandas and Matplotlib.ipynb" independently calculates LTV for all customers, and shows results with mirror those of the Solution.py output. I've done this for testing purposes, but also to try out some visualizations.
 
 
 ### Performance:
