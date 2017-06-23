@@ -1,140 +1,32 @@
-#Shutterfly Customer Lifetime Value
+The original problem statement can be found here: https://github.com/sflydwh/code-challenge
 
-One way to analyze acquisition strategy and estimate marketing cost is to calculate the Lifetime Value (“LTV”) of a customer. Simply speaking, LTV is the projected revenue that customer will generate during their lifetime.
 
-A simple LTV can be calculated using the following equation: `52(a) x t`. Where `a` is the average customer value per week (customer expenditures per visit (USD) x number of site visits per week) and `t` is the average customer lifespan. The average lifespan for Shutterfly is 10 years.  
+### Problem Statement, reduced:
 
-## Code Requirements
+The goal of this project is to:
+#. Create event data IAW data schema given in problem statement. 
+#. Define Ingest(e,D) function to ingest event data. 
+#. Define TopXSimpleLTVCustomers(x, D) function to calculate the Lifetime Value (“LTV”) of a customer based on data in D.
+#. Call functions to produce output.
 
-Write a program that ingests event data and implements one analytic method, below. You are expected to write clean, well-documented and well-tested code. Be sure to think about performance - what the performance characteristic of the code is and how it could be improved in the future.
 
-You may use one of the following OO languages: Java, Python, Scala.
+### Assumptions about the Problem:
 
-### Ingest(e, D)
-Given event e, update data D
+#. We don't know how much input data we need to generate. The function GenEvents called in main() has the keyword argument 'number_events' which can be set to generate a number of random events.
+#. New Customer Update Rule: For simplicity, New or Update verbs are treated as the same create or update instruction. There's no check to ensure a record exists before it is updated. Some exception handling is needed.
+#. We don't know how records will ultimately be sorted by calling analytics functions, so we leave the event records categorized by customer_id and event type, but leave the records within these categories unsorted.
+#. We don't know how the range of timestamps to use to correlate ORDER event_time and SITE_VISIT event_time fields needed to calculate average customer value per week (order expenditure / site_visit event). 
 
-### TopXSimpleLTVCustomers(x, D)
-Return the top x customers with the highest Simple Lifetime Value from data D. 
+    - We could probably use 1 hour windows, but what if there are multiple site visits in one day? 
+    - Could there be a case where no site visit occurred by a customer, yet there was an order by the customer? Exception handling for divide by zero error is needed.
 
-Please note that the timeframe for this calculation should come from D. That is, use the data that was ingested into D to calculate the LTV to frame the start and end dates of your LTV calculation. You should not be using external data (in particular "now") for this calculation.
 
-## Events
+### Performance:
 
-Please use the following sample events the Data Warehouse collects from Shutterfly’s public sites. All events have a `key` and `event_time`, but are received with no guaranteed order and with fluctuating frequency.
+Lookup by customer is O(1) (on average) for dictionaries.
 
-See `sample_input` directory for a sample of each event.
 
-### Customer
-* type *
-  * CUSTOMER
-* verb *
-  * NEW
-  * UPDATE
-* Additional Data
-  * key(customer_id) *
-  * event_time *
-  * last_name
-  * adr_city
-  * adr_state
+### Optimizations:
 
-### Site Visit
-* type *
-  * SITE_VISIT
-* verb *
-  * NEW
-* Additional Data
-  * key(page_id) *
-  * event_time *
-  * customer_id *
-  * tags (array of name/value properties)
-
-### Image Upload
-* type *
-  * IMAGE
-* verb *
-  * UPLOAD
-* Additional Data
-  * key(image_id) *
-  * event_time *
-  * customer_id *
-  * camera_make
-  * camera_model
-
-### Order
-* type *
-  * ORDER
-* verb *
-  * NEW
-  * UPDATE
-* Additional Data
-  * key(order_id) *
-  * event_time *
-  * customer_id *
-  * total_amount *
-
-\* represents required data
-
-## Directory structure
-This project has the following directories, and it is expected that your code will follow the same structure.
-
-```
-- README.md
-- src (your source will live here)
-- input (input file you create as proof of functionality lives here)
-- output (output file with the result of TopXSimpleLTVCustomers(10, D). Include the calculated LTV.)
-- sample_input (one event of each type for visualization purposes)
-```
-
-## Reference
-https://blog.kissmetrics.com/how-to-calculate-lifetime-value
-
-## Submission
-Once you have completed your code, submit a link to a Github repo that contains your source code to <mailto:ccdwh@shutterfly.com>.
-
-## FAQ
-
-* *Do I need to create a private repo?*
-
-  No, you do not need to pay for a private repo - public is fine.
-
-* *Where does the data structure passed into the methods come from?*
-
-  Some caller will pass you the data structure to use. You will define an in-memory data structure to use for the purposes of this challenge, but in some theoretical future refactor of this code there could be a different data structure implementation.
-
-* *What does an event look like?*
-
-  Please see sample events in the sample_input directory. These are intentionally just a single example for you to visualize the data, your code should be tested with more events than these.
-
-* *How should I handle data that [is missing (OR) looks like (OR) has] particular case X?*
-
-  You are welcome to protect your code against any particular data or handle data in any particular way, but it is a best practice to gracefully handle unexpected input. You should document any critical design decisions or assumptions.
-
-* *You are requiring ingesting of events that are not used. What am I missing?*
-
-  The analytic method `TopXSimpleLTVCustomers` is only one potential method of looking at the data ingested. There could be other methods to do other functions. You are still required to ingest events even if they are not consumed as part of this challenge.
-
-* *May I use pre-built libraries?*
-
-  You may, but you should not need to use anything exotic. Fairly standard libraries such as parsing functionality is fine. If you do use libraries that need to be separately downloaded or referenced to use the program, please document.
-
-* *May I use Big Data technology XYZ?*
-
-  Probably not. The purpose of this coding challenge is to ensure you have a solid foundation in coding skills. Additionally, your code must be easy to be reviewed and tested, so you should not expect the reviewer to have your specific technology installed and available. In the end, you must be sure that your resulting output is sufficient to showcase your code.
-
-* *How long may I work on this?*
-
-  The rough expectation is that the challenge will take a couple/few real time hours and can therefore be due in 48 calendar hours. That said, it is more important to be well built than timely so if you have other commitments and cannot quickly accomplish the challenge, then you can take more time.
-
-* *What is the point of dealing with site visits? Couldn't I just add up the order totals and multiply?*
-
-  Correct, dividing revenue by site visits just to multiply back out is not necessary to get to the result. That being said, for the purposes of this exercise you should assume that revenue / visit and visits / week are important metrics to the business and should be available from the data - even if you choose to not implement your revenue calculation using them.
-
-* *How do I handle missing data? What if a user doesn't come back?*
-
-  You should consider your data set (whatever data set you use to test) as complete for that timeframe. So if user A has order events in week 1 and order events in the following week 2, but user B has only order events in week 1, then user B will have see a lower average revenue as his revenue is averaged with zero revenue in week 2.
-
-* *What constitutes a week?*
-
-  You can calculate whatever you want for a week, but it is probably easier to consider a week as running from Sunday - Saturday, as the US default calendar does.
-
-If you have further questions you can email <mailto:ccdwh@shutterfly.com>.
+- Define Visit Class with properties for total_sale (customer expenditures) per visit. (Will need to define parameters to correlate ORDER event_time and SITE_VISIT event_time).
+- Define Customer Class with properties for name, address, visits, and orders.

@@ -16,7 +16,7 @@ def GenEvent():
     event = {}
     event_type = random.choice(['CUSTOMER', 'ORDER', 'IMAGE', 'SITE_VISIT'])
     user_name = 'user' + str(random.choice(range(1, 10)))
-    uhash = hashlib.sha1(user_name.encode('utf-8')).hexdigest()
+    uhash = hashlib.sha1(user_name.encode('utf-8')).hexdigest()[:12]
 
     year = 2017
     month = 6
@@ -55,9 +55,9 @@ def GenEvent():
     return event
 
 
-def GenEvents(N):
+def GenEvents(number_events=1):
     batch = []
-    for i in range(N):
+    for i in range(number_events):
         generated_event = GenEvent()
         batch.append(generated_event)
     batch = json.dumps(batch)
@@ -131,13 +131,13 @@ def TopXSimpleLTVCustomers(x, D):
 
 
 def main():
-    GenEvents(100)
+    GenEvents(number_events=100)
     with open(IN_FILE) as f:
         batch = json.load(f)
     for e in batch:
         Ingest(e, D)
 
-    TopXSimpleLTVCustomers(10, D)
+    TopXSimpleLTVCustomers(5, D)
 
 
 if __name__ == "__main__":
