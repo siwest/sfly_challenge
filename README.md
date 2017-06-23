@@ -5,9 +5,9 @@ The original problem statement can be found here: https://github.com/sflydwh/cod
 
 The goal of this project is to:
 
-1. Create event data IAW data schema given in problem statement. 
-2. Define Ingest(e,D) function to ingest event data. 
-3. Define TopXSimpleLTVCustomers(x, D) function to calculate the Lifetime Value (“LTV”) of a customer based on data in D.
+1. Create event data in accordance with a data schema given in the problem statement. 
+2. Define a function ingest(e, d) to ingest event data (e) and update data structure (d).
+3. Define a function top_x_simple_ltv_customers(x, d) to return the Lifetime Value (“LTV”) of the top x customers based on data in d.
 4. Call functions to produce output.
 
 
@@ -16,18 +16,22 @@ The goal of this project is to:
 - We don't know how much input data we need to generate. The function GenEvents called in main() has the keyword argument 'number_events' which can be set to generate a number of random events.
 - New Customer Update Rule: For simplicity, New or Update verbs are treated as the same create or update instruction. There's no check to ensure a record exists before it is updated. Some exception handling is needed.
 - We don't know how records will ultimately be sorted by calling analytics functions, so we leave the event records categorized by customer_id and event type, but leave the records within these categories unsorted.
-- We don't know how the range of timestamps to use to correlate ORDER event_time and SITE_VISIT event_time fields needed to calculate average customer value per week (order expenditure / site_visit event). 
-
-  - We could probably use 1 hour windows, but what if there are multiple site visits in one day? 
-  - Could there be a case where no site visit occurred by a customer, yet there was an order by the customer? Exception handling for divide by zero error is needed.
+- We don't know under what conditions we should join and ORDER event with a SITE_VISIT event. The timestamps of these can differ.
+  - What is the acceptable range to for a site visit to result in an order? (SITE_VISIT event_time - ORDER event_time)
+  - What if there is no site visit event recorded, but an order occurred? Does this ever happen? Exception handling for divide by zero error is needed.
+  - What if multiple site visit events are in the batch (perhaps someone did several "refreshes" of the session)? How should repeat events be handled?
 
 
 ### Performance:
 
-Lookup by customer is O(1) (on average) for dictionaries.
+The data structure (d) is a json nested dictionary structure.
+
+The function ingest(e, d) iterates over every dictionary item listed in the input file. It then checks if a key for the customer_id and event_type is already in data structure d before creating the key or appending the event to the key's value in d. The time complexity for this task is O(n).
+
+The function top_x_simple_ltv_customers(x, d) iterates over every customer record to get order sales total per customer and total site visits per customer (O(n)). However, it also performs a sort on the result list of customers in O(n*log(n)) time. The time complexity of the function is then O(n*log(n)).
 
 
-### Optimizations:
+### Future Improvements:
 
 - Define Visit Class with properties for total_sale (customer expenditures) per visit. (Will need to define parameters to correlate ORDER event_time and SITE_VISIT event_time).
 - Define Customer Class with properties for name, address, visits, and orders.
