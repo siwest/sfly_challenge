@@ -76,7 +76,7 @@ def main():
     for e in batch:
         ingest(e, D)
 
-    top_x_simple_ltv_customers(5, D)
+    top_x_simple_ltv_customers(10, D)
 
 
 if __name__ == "__main__":

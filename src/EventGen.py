@@ -2,6 +2,7 @@ import hashlib
 import json
 import os
 import random
+import sys
 from datetime import datetime
 
 IN_FILE = os.path.join(os.getcwd(), 'input/input.txt')
@@ -80,7 +81,7 @@ def generate_events(number_events=1):
 
 def main():
     # Set number_events to generate a number of events.
-    generate_events(number_events=100)
+    generate_events(number_events=int(sys.argv[1]))
 
 if __name__ == "__main__":
     main()
