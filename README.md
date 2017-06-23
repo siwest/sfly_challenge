@@ -17,8 +17,8 @@ The goal of this project is to:
 #. We don't know how records will ultimately be sorted by calling analytics functions, so we leave the event records categorized by customer_id and event type, but leave the records within these categories unsorted.
 #. We don't know how the range of timestamps to use to correlate ORDER event_time and SITE_VISIT event_time fields needed to calculate average customer value per week (order expenditure / site_visit event). 
 
-    - We could probably use 1 hour windows, but what if there are multiple site visits in one day? 
-    - Could there be a case where no site visit occurred by a customer, yet there was an order by the customer? Exception handling for divide by zero error is needed.
+  - We could probably use 1 hour windows, but what if there are multiple site visits in one day? 
+  - Could there be a case where no site visit occurred by a customer, yet there was an order by the customer? Exception handling for divide by zero error is needed.
 
 
 ### Performance:
