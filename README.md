@@ -17,9 +17,10 @@ The goal of this project is to:
 - For simplicity, there's no special handling of New or Update verbs. Whenever a CUSTOMER event occurs, it is added to the CUSTOMER event list for that customer. More data processing and some exception handling is needed to ensure updates to customer profiles occur in order. However, this special handling was not required to solve the stated problem.
 - We don't know how records will ultimately be sorted by future calling analytics functions, so we leave the event records categorized by customer_id and event type, but leave the records within these categories unsorted.
 - We don't know under what conditions we should join and ORDER event with a SITE_VISIT event. The timestamps of these can differ.
-  - What is the acceptable range to for a site visit to result in an order? (SITE_VISIT event_time - ORDER event_time)
+  - What is the acceptable range of time to say a site visit results in an order? (SITE_VISIT event_time - ORDER event_time)
   - What if there is no site visit event recorded, but an order occurred? Does this ever happen? Exception handling for divide by zero error is needed.
   - What if multiple site visit events are in the batch (perhaps someone did several "refreshes" of the session)? How should repeat events be handled?
+- The event data has been left 'intact' within data structure d; that is, no duplicate keys (ex: customer_id, event_type) were deleted from the dictionary event object added to d during the ingest(e, d) task. This may make it easier to recreate the original data objects in the future, if needed.
 
 
 ### How to run Solution:
@@ -52,7 +53,7 @@ The data structure (d) is a json nested dictionary structure.
 
 The function ingest(e, d) iterates over every dictionary item listed in the input file. It then checks if a key for the customer_id and event_type is already in data structure d before creating the key or appending the event to the key's value in d. The time complexity for this task is O(n).
 
-The function top_x_simple_ltv_customers(x, d) iterates over every customer record to get order sales total per customer and total site visits per customer (O(n)). However, it also performs a sort on the result list of customers in O(n*log(n)) time. The time complexity of the function is then O(n*log(n)).
+The function top_x_simple_ltv_customers(x, d) iterates over every customer record to get order sales total per customer and total site visits per customer (O(n)). However, it also performs a sort on the result list of customers in O(n * log(n)) time. The time complexity of the function is then O(n * log(n)).
 
 
 ### Future Improvements:
