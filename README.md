@@ -13,13 +13,13 @@ The goal of this project is to:
 
 ## Assumptions about the Problem:
 
-- We don't know how much input data we need to generate. The function GenEvents called in main() has the keyword argument 'number_events' which can be set to generate a number of random events.
+- The problem statement doesn't say how much input data to generate. The function GenEvents called in main() has the keyword argument 'number_events' which can be set to generate a number of random events.
 - For simplicity, there's no special handling of New or Update verbs. Whenever a CUSTOMER event occurs, it is added to the CUSTOMER event list for that customer. More data processing and some exception handling is needed to ensure updates to customer profiles occur in order. However, this special handling was not required to solve the stated problem.
-- We don't know how records will ultimately be sorted by future calling analytics functions, so we leave the event records categorized by customer_id and event type, but leave the records within these categories unsorted.
-- We don't know under what conditions we should join and ORDER event with a SITE_VISIT event. The timestamps of these can differ.
+- It is not known how records need sorted by future calling analytics functions; therefore, in the data structure (d) event records are only categorized by customer_id and event type, but unsorted with these categories.
+- It is not known under what conditions a join of an ORDER event and a SITE_VISIT event should occur. The timestamps of these can differ.
   - What is the acceptable range of time to say a site visit results in an order? (SITE_VISIT event_time - ORDER event_time)
   - What if there is no site visit event recorded, but an order occurred? Does this ever happen? Exception handling for divide by zero error is needed.
-  - What if multiple site visit events are in the batch (perhaps someone did several "refreshes" of the session)? How should repeat events be handled?
+  - How should repeat events be handled? (Ex: Avoid joining one order to multiple site visits, and handle case when multiple orders result from a single site visit).
 - The event data has been left 'intact' within data structure d; that is, no duplicate keys (ex: customer_id, event_type) were deleted from the dictionary event object added to d during the ingest(e, d) task. This may make it easier to recreate the original input data in the future, if needed.
 
 
@@ -64,4 +64,4 @@ The function top_x_simple_ltv_customers(x, d) iterates over every customer recor
 - Define Visit Class with properties for total_sale (customer expenditures) per visit. (Will need to define parameters to correlate ORDER event_time and SITE_VISIT event_time).
 - Define Customer Class with properties for name, address, visits, and orders.
 - Sort events collected within each category by event_time in d to more efficiently support time-dependent, transactional analytics functions.
-- Explore alternatives to changing state of variables - get away from global variables
+- Explore alternatives to changing state of variables - get away from global variables.
