@@ -47,7 +47,7 @@ The output of the Solution's top_x_simple_ltv_customers function is saved in out
 
 ### Testing and Further Analysis
 
-A ipython notebook file named "Verification and Visualization with Pandas and Matplotlib.ipynb" independently calculates LTV for all customers, and shows results with mirror those of the Solution.py output. I've done this for testing purposes, but also to try out some visualizations.
+A ipython notebook file named "Verification and Visualization with Pandas and Matplotlib.ipynb" independently calculates LTV for all customers, and shows results which mirror those of the Solution.py output. This is done for testing purposes, but also to try out some visualizations.
 
 
 ### Performance:
