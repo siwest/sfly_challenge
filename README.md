@@ -15,7 +15,7 @@ The goal of this project is to:
 
 - The problem statement doesn't say how much input data to generate. The function GenEvents called in main() has the keyword argument 'number_events' which can be set to generate a number of random events.
 - For simplicity, there's no special handling of New or Update verbs. Whenever a CUSTOMER event occurs, it is added to the CUSTOMER event list for that customer. More data processing and some exception handling is needed to ensure updates to customer profiles occur in order. However, this special handling was not required to solve the stated problem.
-- It is not known how records need sorted by future calling analytics functions; therefore, in the data structure (d) event records are only categorized by customer_id and event type, but unsorted with these categories.
+- It is not known how records need to be sorted by future calling analytics functions; therefore, the data structure (d) event records are categorized by customer_id and event type, but left unsorted with these categories.
 - It is not known under what conditions a join of an ORDER event and a SITE_VISIT event should occur. The timestamps of these can differ.
   - What is the acceptable range of time to say a site visit results in an order? (SITE_VISIT event_time - ORDER event_time)
   - What if there is no site visit event recorded, but an order occurred? Does this ever happen? Exception handling for divide by zero error is needed.
@@ -47,7 +47,7 @@ The output of the Solution's top_x_simple_ltv_customers function is saved in out
 
 #### Testing and Further Analysis
 
-A ipython notebook file named "Verification and Visualization with Pandas and Matplotlib.ipynb" independently calculates LTV for all customers, and shows results which mirror those of the Solution.py output. This is done for testing purposes, but also to try out some visualizations.
+An ipython notebook file named "Verification and Visualization with Pandas and Matplotlib.ipynb" independently calculates LTV for all customers, and shows results which mirror those of the Solution.py output. This is done for testing purposes, but also to try out some visualizations.
 
 
 ## Performance:
