@@ -18,7 +18,7 @@ def generate_event():
     # Randomly pick an event type.
     event_type = random.choice(['CUSTOMER', 'ORDER', 'IMAGE', 'SITE_VISIT'])
 
-    # Create 10 random user_names
+    # Choose of 10 user_names
     user_name = 'user' + str(random.choice(range(1, 10)))
 
     # Create user_name hash; take only first 12 digits of a one-way hash

@@ -27,11 +27,11 @@ The goal of this project is to:
 
 #### Generate Events
 
-The last created events are saved in the input/input.txt file. 100 new events can be created by running:
+The last created events are saved in the input/input.txt file. 100 new events for 10 users can be created by running:
 
     python src/EventGen.py 100
 
-Feel free to use any number in the command line argument to tailor the desired number of random events.
+Feel free to use any number in the command line argument to tailor the desired number of random events for 10 users. The default is 1. To update the number of users to generate events for, the user_names end range in the generate_event function can be updated (line 22, EventGen.py). Be sure to use a number large enough to support analytic functions in the Solution, but small enough that users are likely to be assigned many events.
 
 #### Run Analytics
 
@@ -65,3 +65,4 @@ The function top_x_simple_ltv_customers(x, d) iterates over every customer recor
 - Define Customer Class with properties for name, address, visits, and orders.
 - Sort events collected within each category by event_time in d to more efficiently support time-dependent, transactional analytics functions.
 - Explore alternatives to changing state of variables - get away from global variables.
+- Improve sample event generating functions (if needed); for example, make # of user_names created equal to some random number in the range of (1, number_events/4).
